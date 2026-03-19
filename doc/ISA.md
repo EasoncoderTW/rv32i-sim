@@ -16,7 +16,7 @@
 | OR          | 0110011 | 110    | 0000000| OR                  |
 | AND         | 0110011 | 111    | 0000000| AND                 |
 
-### I-Type Instructions
+### I-Type Instructions (Immediate Arithmetic and Load)
 | Instruction | Opcode  | Funct3 | Description          |
 |-------------|---------|--------|----------------------|
 | ADDI        | 0010011 | 000    | Add Immediate        |
@@ -61,10 +61,10 @@
 | Instruction | Opcode  | Description          |
 |-------------|---------|----------------------|
 | JAL         | 1101111 | Jump and Link        |
+| JALR        | 1100111 | Jump and Link Register |
 
 ### Other Instructions
 | Instruction | Opcode  | Funct3 | Description          |
 |-------------|---------|--------|----------------------|
-| JALR        | 1100111 | 000    | Jump and Link Register |
 | ECALL       | 1110011 | 000    | Environment Call      |
 | EBREAK      | 1110011 | 000    | Environment Break     |
