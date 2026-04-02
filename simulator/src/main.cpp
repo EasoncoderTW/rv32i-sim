@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     ISS simulator(config);
     simulator.run();
-    simulator.dump_registers(true); // dump registers in hexadecimal
+    simulator.dump_cpu_info(true); // dump registers in hexadecimal
 
     return 0;
 }

@@ -20,10 +20,16 @@ public:
 
     // heller function
     void dump_registers(bool hexadecimal);
+    void dump_instruction_count() {
+        cout << "Total instructions executed: " << instruction_count << endl;
+    }
 
 private:
     uint32_t registers[32]; // 32 general-purpose registers
     uint32_t pc; // program counter
 
     Device *device_master; // interface
+
+    // for debug use
+    uint32_t instruction_count = 0;
 };

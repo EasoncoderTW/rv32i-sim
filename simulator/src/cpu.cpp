@@ -10,6 +10,7 @@ RV32ICPU::RV32ICPU() : pc(0) {
     for (int i = 0; i < 32; ++i) {
         registers[i] = 0;
     }
+    instruction_count = 0;
 }
 
 void RV32ICPU::run() {
@@ -17,6 +18,7 @@ void RV32ICPU::run() {
     while (running) {
         // Fetch instruction
         uint32_t instructions = device_master->read(pc);
+        instruction_count++;
 
         // Decode instruction
         Instruction instr = decode_instruction(instructions);

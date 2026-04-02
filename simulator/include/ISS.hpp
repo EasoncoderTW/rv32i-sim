@@ -42,8 +42,10 @@ public:
     }
 
     // heller functions
-    void dump_registers(bool hexadecimal) {
+    void dump_cpu_info(bool hexadecimal) {
         cpu->dump_registers(hexadecimal);
+        cpu->dump_instruction_count();
+
     }
 
     void dump_memory(size_t start_address, size_t length) {
