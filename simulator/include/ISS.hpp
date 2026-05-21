@@ -15,10 +15,12 @@ class ISS{
 public:
     ISS(const ISSConfiguration &config) : config(config) {
         cpu = new RV32ICPU();
-        memory = new Memory(0x10000000, config.memory_size); // Memory starts at 0x10000000
+        memory = new Memory(0x40000000, config.memory_size); // Memory starts at 0x40000000
         bus = new SystemBus();
         uart = new Uart();
+        timer = new Timer();
         cpu->bind_device(bus);
+        cpu->bind_timer(timer);
 
         attach_devices();
 
@@ -34,18 +36,25 @@ public:
         delete memory;
         delete bus;
         delete uart;
+        delete timer;
     }
 
     void run() {
         std::cout << "Starting simulation..." << std::endl << std::endl << std::endl;
-        cpu->run();
+        bool running = true;
+        while (running) {
+            // Simulate timer tick
+            if (timer) {
+                timer->tick();
+            }
+            running = cpu->tick();
+        }
     }
 
     // heller functions
     void dump_cpu_info(bool hexadecimal) {
         cpu->dump_registers(hexadecimal);
         cpu->dump_instruction_count();
-
     }
 
     void dump_memory(size_t start_address, size_t length) {
@@ -59,8 +68,8 @@ private:
 
     void attach_devices() {
         bus->attach_device(0x400, 0x100, uart); // UART at 0x400
-        bus->attach_device(0x10000000, config.memory_size, memory); // Memory at 0x10000000
-
+        bus->attach_device(0x20000000, 0xBFFF, timer); // Timer at 0x20000000
+        bus->attach_device(0x40000000, config.memory_size, memory); // Memory at 0x40000000
         bus->list_devices();
     }
 
@@ -70,4 +79,6 @@ private:
     Memory *memory;
     SystemBus *bus;
     Uart *uart;
+    Timer *timer;
+
 };

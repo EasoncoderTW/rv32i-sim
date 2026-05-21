@@ -36,6 +36,10 @@ inline uint32_t get_rs2(uint32_t instruction) {
     return (instruction >> 20) & 0x1F; // rs2 is in bits [24:20]
 }
 
+inline uint32_t get_csr(uint32_t instruction) {
+    return (instruction >> 20) & 0xFFF; // csr address is in bits [31:20]
+}
+
 // Immediate extraction functions for different instruction types
 // I-type: imm[31:20]
 // S-type: imm[31:25|11:7]
@@ -98,7 +102,7 @@ inline uint32_t get_shamt(uint32_t instruction) {
 }
 
 Instruction decode_instruction(uint32_t instruction_word) {
-    Instruction instr;
+    Instruction instr = {};
     instr.instruction_word = instruction_word;
     uint32_t opcode = get_opcode(instruction_word);
     uint32_t funct3 = get_funct3(instruction_word);
@@ -108,6 +112,7 @@ Instruction decode_instruction(uint32_t instruction_word) {
     instr.rs2 = get_rs2(instruction_word);
     instr.imm = get_imm(instruction_word);
     instr.shamt = get_shamt(instruction_word);
+    instr.csr = get_csr(instruction_word);
     // Determine operation based on opcode and funct3
 
     uint32_t funct7 = get_funct7(instruction_word);
@@ -265,8 +270,32 @@ Instruction decode_instruction(uint32_t instruction_word) {
         case OPCODE_SYSTEM:
             if (instruction_word == ECALL_OPCODE) {
                 instr.operation = OPERATION::ECALL; //
+            } else if (instruction_word == MRET_OPCODE) {
+                instr.operation = OPERATION::MRET;
             } else {
-                instr.operation = OPERATION::UNKNOWN; // Default operation for unknown system instruction
+                switch (funct3) {
+                    case FUNCT3_CSRRW:
+                        instr.operation = OPERATION::CSRRW;
+                        break;
+                    case FUNCT3_CSRRS:
+                        instr.operation = OPERATION::CSRRS;
+                        break;
+                    case FUNCT3_CSRRC:
+                        instr.operation = OPERATION::CSRRC;
+                        break;
+                    case FUNCT3_CSRRWI:
+                        instr.operation = OPERATION::CSRRWI;
+                        break;
+                    case FUNCT3_CSRRSI:
+                        instr.operation = OPERATION::CSRRSI;
+                        break;
+                    case FUNCT3_CSRRCI:
+                        instr.operation = OPERATION::CSRRCI;
+                        break;
+                    default:
+                        instr.operation = OPERATION::UNKNOWN; // Default operation for unknown system instruction
+                        break;
+                }
             }
             break;
         default: // Default operation for unknown opcode

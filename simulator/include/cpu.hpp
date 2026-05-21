@@ -1,7 +1,9 @@
 #pragma once
 #include <iostream>
+#include "csr.hpp"
 #include "utils.hpp"
 #include "device.hpp"
+#include "timer.hpp"
 
 using namespace std;
 
@@ -13,7 +15,11 @@ public:
         device_master = dev;
     }
 
-    void run();
+    void bind_timer(Timer *timer_device) {
+        timer = timer_device;
+    }
+
+    bool tick();
     void set_pc(uint32_t address) {
         pc = address;
     }
@@ -25,10 +31,16 @@ public:
     }
 
 private:
+    bool handle_interrupts();
+    bool execute_csr_instruction(const Instruction &instr);
+
     uint32_t registers[32]; // 32 general-purpose registers
     uint32_t pc; // program counter
 
+    CsrFile csr_file;
+
     Device *device_master; // interface
+    Timer *timer; // timer device
 
     // for debug use
     uint32_t instruction_count = 0;

@@ -2,8 +2,8 @@ ENTRY(_start)
 
 MEMORY
 {
-  IM (rx) : ORIGIN = 0x10000000, LENGTH = 1K
-  DM (rwx) : ORIGIN = 0x10000400, LENGTH = 1K
+  IM (rx) : ORIGIN = 0x40000000, LENGTH = 256K
+  DM (rwx) : ORIGIN = 0x40020000, LENGTH = 256K
 }
 
 SECTIONS
@@ -18,7 +18,7 @@ SECTIONS
   .rodata : {
     *(.rodata)
     *(.rodata.*)
-  } > DM
+  } > IM
 
   .data : {
     *(.data)
@@ -31,8 +31,13 @@ SECTIONS
     *(COMMON)
   } > DM
 
-  /* 堆疊區域（可選） */
   . = ALIGN(8);
-  _stack_top = . + 4K;
+  end = .;
+  _end = .;
+  PROVIDE(end = .);
+  PROVIDE(_end = .);
+
+  /* stack top = DM end */
+  _stack_top = ORIGIN(DM) + LENGTH(DM);
   PROVIDE(_sp = _stack_top);
 }

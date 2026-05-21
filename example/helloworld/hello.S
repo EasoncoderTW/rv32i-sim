@@ -1,6 +1,6 @@
 .text
-.global _start
-_start:
+.global main
+main:
     la a0, message # load address of message into a0
     li a1, 0x400 # load address of uart into a1
 loop:

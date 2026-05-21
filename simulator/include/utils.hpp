@@ -13,6 +13,8 @@ enum class OPERATION {
     LW, LH, LB, LHU, LBU , SW, SH, SB,
     BEQ, BNE, BLT, BGE, BLTU, BGEU,
     LUI, AUIPC, JAL, JALR,
+    CSRRW, CSRRS, CSRRC, CSRRWI, CSRRSI, CSRRCI,
+    MRET,
     ECALL,
     UNKNOWN
 };
@@ -26,6 +28,7 @@ struct Instruction {
     uint32_t rs2; // source register 2
     uint32_t imm; // immediate value
     uint32_t shamt; // shift amount for shift instructions
+    uint32_t csr; // csr address for system instructions
     OPERATION operation; // decoded operation
 };
 
